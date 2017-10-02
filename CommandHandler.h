@@ -1,9 +1,16 @@
 /** @file
- * Contains all the code for the Arduino CommandHandler library
+ *
+ * CommandHandler
+ *
+ * 2nd October 2017 - Charles Baynham
+ *
+ * This library is designed to receive serial input on a microprocessor, parse
+ * it, match it against a list of possible commands and call the appropriate
+ * one. It incorperates basic parameter checking (correct number only) and
+ * returns a CommandHandlerReturn object which indicates how each call went.
+ *
+ * See README.txt for more information. 
  * 
- * Space requirements: 6 bytes + 8 per command + buffer size
- * 
- * @todo Write the CommandHandler documentation
  */
 
  #pragma once
@@ -39,6 +46,11 @@ enum class CommandHandlerReturn {
 	COMMAND_TOO_LONG,
 	UNKNOWN_ERROR
 };
+
+class ParameterLookup;
+
+// Template for the functions to be called in response to a command
+typedef void commandFunction(const ParameterLookup& params);
 
 //////////////////////  PARAMETER LOOKUP  //////////////////////
 
@@ -216,9 +228,6 @@ private:
 	unsigned int _size;
 
 };
-
-// Template for the functions to be called in response to a command
-typedef void commandFunction(const ParameterLookup& params);
 
 //////////////////////  COMMAND HANDLER  //////////////////////
 
