@@ -97,37 +97,41 @@ public:
 	// Paremeter -1 returns the entire string
 	// Paremeter -2 returns all the parameters
 	// Requesting a non-existent parameter will return a NULL ptr
-	const char * operator [] (int idx) const
-	{
+	const char* operator[](int idx) const {
+		// This is a const method, so I'm not allowed to modify the object. However,
+		// I want to. I know that these modifications don't change the object in a
+		// relevant way, so this is a const method "in spirit". To force the
+		// compiler to accept this, I cast away the const-ness of our pointer.
+		ParameterLookup* this_mutable = const_cast<ParameterLookup*>(this);
 
 		if (idx == -1) {
 			// The user wants the whole string.
 			// OK, replace all the NULLs with spaces and then return a pointer
 			// to the start of the string
-			
-			if (_stringHasNULLS) 
-				restoreSpaces();
+
+			if (_stringHasNULLS) this_mutable->restoreSpaces();
 
 			return _theCommand;
 
 		} else if (idx == -2) {
 			// The user wants all the parameters
-			// Find a pointer to the first param then restore all the spaces and return it
-			
-			char* ptr = getParamPtr(1);
-			
-			restoreSpaces();
+			// Find a pointer to the first param then restore all the spaces and
+			// return it
+
+			char* ptr = this_mutable->getParamPtr(1);
+
+			this_mutable->restoreSpaces();
 
 			return ptr;
 
 		} else {
-			// The user wants a particular parameter. Ensure the string si setup correctly, 
-			// then loop through to return a pointer to the start of the appropriate param
-			
-			if (!_stringHasNULLS)
-				subSpacesForNULL();
+			// The user wants a particular parameter. Ensure the string si setup
+			// correctly, then loop through to return a pointer to the start of the
+			// appropriate param
 
-			return getParamPtr(idx);
+			if (!_stringHasNULLS) this_mutable->subSpacesForNULL();
+
+			return this_mutable->getParamPtr(idx);
 		}
 	}
 
