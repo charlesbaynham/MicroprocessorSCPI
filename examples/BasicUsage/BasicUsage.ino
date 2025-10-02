@@ -3,26 +3,25 @@
 // Create a CommandHandler object to hold 5 commands
 CommandHandler<5> h;
 
-
 ///////////////////////////////////////////////////////
 // Declare functions to be called by serial commands //
 ///////////////////////////////////////////////////////
 
-commandFunction helloWorld; // "hello"
+commandFunction helloWorld;	 // "hello"
 commandFunction helloWorldQ; // "hello?"
-commandFunction echoMe; // "echo"
-commandFunction adder; // "add"
-commandFunction echoMany; // "echoMany"
+commandFunction echoMe;		 // "echo"
+commandFunction adder;		 // "add"
+commandFunction echoMany;	 // "echoMany"
 
 ///////////////////////////////////////////////////////
 //             End function declaration              //
 ///////////////////////////////////////////////////////
 
+void setup()
+{
 
-void setup() {
-
-  Serial.begin(57600);
-  Serial.println(F("Program started..."));
+	Serial.begin(57600);
+	Serial.println(F("Program started..."));
 
 	// Register serial commands for triggering the previously
 	// declared functions
@@ -31,25 +30,28 @@ void setup() {
 	// parameters it takes (to be read as strings, delimited by spaces) and the
 	// function it links to
 
-	h.registerCommand(COMMANDHANDLER_HASH( "heLLo" ), 0, helloWorld);
-	h.registerCommand(COMMANDHANDLER_HASH( "hello?"), 0, helloWorldQ);
-	h.registerCommand(COMMANDHANDLER_HASH( "eCHo"), 1, echoMe);
-	h.registerCommand(COMMANDHANDLER_HASH( "add"), 2, adder);
+	h.registerCommand(COMMANDHANDLER_HASH("heLLo"), 0, helloWorld);
+	h.registerCommand(COMMANDHANDLER_HASH("hello?"), 0, helloWorldQ);
+	h.registerCommand(COMMANDHANDLER_HASH("eCHo"), 1, echoMe);
+	h.registerCommand(COMMANDHANDLER_HASH("add"), 2, adder);
 
 	// Setting num params to "-1" will allow any number of params to be passed
-	h.registerCommand(COMMANDHANDLER_HASH( "echoMany"), -1, echoMany);
+	h.registerCommand(COMMANDHANDLER_HASH("echoMany"), -1, echoMany);
 }
 
-void loop() {
+void loop()
+{
 
 	// Check for commands
-	if (h.commandWaiting()) {
+	if (h.commandWaiting())
+	{
 
 		// Execute first waiting command
 		CommandHandlerReturn result = h.executeCommand();
 
 		// Report any errors
-		switch (result) {
+		switch (result)
+		{
 		case CommandHandlerReturn::COMMAND_NOT_FOUND:
 
 			Serial.println(F("Command not found"));
@@ -64,12 +66,12 @@ void loop() {
 
 			Serial.print(F("Error code "));
 			Serial.println(int(result));
-
 		}
 	}
 
 	// Check for serial input
-	while (Serial.available()) {
+	while (Serial.available())
+	{
 		// Queue input for processing
 		h.addCommandChar(Serial.read());
 	}
@@ -80,21 +82,23 @@ void loop() {
 ///////////////////////////////////////////////////////
 
 // Takes no params
-void helloWorld(const ParameterLookup& params) {
+void helloWorld(const ParameterLookup &params)
+{
 
 	Serial.println(F("Hello world!"));
-
 }
 
 // Takes no params
-void helloWorldQ(const ParameterLookup& params) {
+void helloWorldQ(const ParameterLookup &params)
+{
 
 	Serial.println(F("You sent a SCPI query"));
 }
 
 // Echo a string
 // 1 param
-void echoMe(const ParameterLookup& params) {
+void echoMe(const ParameterLookup &params)
+{
 
 	Serial.print(F("Passed string was: \""));
 	Serial.print(params[1]);
@@ -104,7 +108,8 @@ void echoMe(const ParameterLookup& params) {
 
 // Add two numbers
 // 2 params
-void adder(const ParameterLookup& params) {
+void adder(const ParameterLookup &params)
+{
 
 	// Convert the first parameter to a number
 	double first = atof(params[1]);
@@ -123,13 +128,15 @@ void adder(const ParameterLookup& params) {
 
 // Echo unlimited number of parameters
 // unlimited paramas
-void echoMany(const ParameterLookup& params) {
+void echoMany(const ParameterLookup &params)
+{
 
 	Serial.print(F("Number of params to echo is: "));
 	Serial.println(params.size());
 
 	// Loop until list is done
-	for (int i = 0; i < params.size(); i++) {
+	for (int i = 0; i < params.size(); i++)
+	{
 		Serial.print('"');
 		Serial.print(params[i]);
 		Serial.println('"');

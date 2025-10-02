@@ -1,1 +1,0 @@
-#define LATEST_HASH "00000"
